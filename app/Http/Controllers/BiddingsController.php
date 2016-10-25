@@ -12,9 +12,16 @@ class BiddingsController extends Controller
     public function index()
     {
         $biddings = Biddings::get();
-        $attachments = Attachments::get()->where('bidding_id', 1);
-        $objects = Objects::get()->where('bidding_id', 1);
 
-        return view('biddings', compact('biddings', 'attachments', 'objects'));
+        return view('biddings', compact('biddings'));
+    }
+
+    public function bidding($id)
+    {
+        $biddings = Biddings::get()->where('id', $id);
+        $attachments = Attachments::get()->where('bidding_id', $id);
+        $objects = Objects::get()->where('bidding_id', $id);
+
+        return view('onebidding', compact('biddings', 'attachments', 'objects'));
     }
 }

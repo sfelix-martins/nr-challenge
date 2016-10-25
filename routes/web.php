@@ -11,6 +11,6 @@
 |
 */
 
-Route::get('/', 'TestController@index');
-
 Route::get('/licitacoes', 'BiddingsController@index');
+
+Route::get('/licitacoes/{id}', 'BiddingsController@bidding');

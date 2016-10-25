@@ -6,6 +6,15 @@
     <title>@yield('title')</title>
 </head>
 <body>
+	<header>
+		<nav>
+			<ul>
+				<li><a href="/nr-challenge/public/licitacoes/insert">New Bidding</a></li>
+				<li><a href="/nr-challenge/public/licitacoes/update">Update Bidding</a></li>
+				<li><a href="/nr-challenge/public/licitacoes/delete">Delete Bidding</a></li>
+			</ul>
+		</nav>
+	</header>
     <div class="container">
         @yield('content')
     </div>
