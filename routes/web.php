@@ -11,6 +11,7 @@
 |
 */
 
-Route::get('/licitacoes', 'BiddingsController@index');
 
-Route::get('/licitacoes/{id}', 'BiddingsController@bidding');
+Route::get('/', 'BiddingsController@index');
+
+Route::get('/sspdf', 'WebScraperController@index');
