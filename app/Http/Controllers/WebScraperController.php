@@ -40,43 +40,26 @@ class WebScraperController extends Controller
         //$cliente->request() returns DomCrawler object
         $crawler = $client->request('GET', 'http://www.portal.scf.sebrae.com.br/licitante/frmPesquisarAvancadoLicitacao.aspx');
 
-        $origin = $crawler
-            ->filter('span.unidade')
-            ->each(function (Crawler $node, $i) {
-                return $node->text();
-            });
+        $origin = $crawler->filter('span.unidade')->each(function (Crawler $node, $i) {
+            return $node->text();
+        });
 
-        $title = $crawler
-            ->filter('#resultadoBusca h3')
-            ->each(function (Crawler $node, $i) {
-                return $node->text();
-            });
+        $title = $crawler->filter('#resultadoBusca h3')->each(function (Crawler $node, $i) {
+            return $node->text();
+        });
 
-        $values = $crawler
-            ->filter('#resultadoBusca p')
-            ->each(function (Crawler $node, $i) {
-                return $node->text();
-            });
+        $values = $crawler->filter('#resultadoBusca p')->each(function (Crawler $node, $i) {
+            $replace = array('Data de Abertura : ', 'hSituação:', 'Local da Licitação: ', 'Telefone: ', 'Fax:');
+            return explode('--', str_replace($replace, "--", $node->text()));
+        });
 
-
-        /*
-        $array = str_split($values[0]);
-
-        $word = "";
-
-        $find = str_split("Data de Abertura : ");
-
-        for ($j = 0; $j < count($find); $j++) {
-            for ($i = 0; $i < count($array); $i++) {
-                if ($array[$i] == $find[$j]) {
-                    $word += $array[$i]."";
-                    echo $word;
-                    break;
+        for ($i=0; $i < count($values); $i++) { 
+            for ($j=0; $j < count($values[$i]); $j++) { 
+                if ($j == 0) {
+                    $values[$i][$j] = str_replace('Objeto: ', "", $values[$i][$j]);
                 }
-            } 
+            }
         }
-        */
-
 
         $domain = 'http://www.portal.scf.sebrae.com.br/licitante/';
         $title_page = "Sebrae";

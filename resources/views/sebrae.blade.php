@@ -12,10 +12,25 @@
 	@endif
 	<p>
 		@for ($i = 0; $i < count($origin); $i++)
-			<b>Origin: </b> {{ $origin[$i] }} <br>
-			<b>Name: </b> {{ $title[$i] }} <br>
 			<p>
-				{{ $values[$i] }} <br>
+				<b>Origin: </b> {{ $origin[$i] }} <br>
+				<b>Name: </b> {{ $title[$i] }} <br>
+				@for ($j = 0; $j < count($values[$i]); $j++)
+					@if ($j == 0)
+						<b>Object: </b>
+					@elseif ($j == 1)
+						<b>Starting Date: </b>
+					@elseif ($j == 2)
+						<b>Status: </b>
+					@elseif ($j == 3)
+						<b>Address: </b>
+					@elseif ($j == 4)
+						<b>Phone Number: </b>
+					@else 
+						<b>Fax: </b>
+					@endif
+					{{ $values[$i][$j] }} <br>
+				@endfor
 			</p>
 		@endfor
 	</p>	
