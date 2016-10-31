@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('title')
-    SSP-DF Biddings
+    SSP-DF - Biddings
 @stop
 
 @section('content')

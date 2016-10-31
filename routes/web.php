@@ -14,4 +14,8 @@
 
 Route::get('/', 'BiddingsController@index');
 
-Route::get('/sspdf', 'WebScraperController@index');
+Route::get('/sspdf', 'WebScraperController@sspdf');
+
+Route::get('/sebrae', 'WebScraperController@sebrae');
+
+Route::get('/cnpq', 'WebScraperController@cnpq');

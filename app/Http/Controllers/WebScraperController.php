@@ -3,24 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Goutte\Client;
-use Symfony\Component\DomCrawler\Crawler;
 use App\Http\Requests;
 use Session;
 use Sunra\PhpSimple\HtmlDomParser;
+use Symfony\Component\DomCrawler\Crawler;
+use Goutte\Client;
+
 
 class WebScraperController extends Controller
 {
-    //
-    public function index()
+    // Using Simple Html Dom Parser
+    public function sspdf()
     {
-    	$Client = new Client();
-
-    	$guzzleclient = new \GuzzleHttp\Client([
-    		'timeout' => 60,
-    		'verify'  => false,
-    	]);
-
     	$html = HtmlDomParser::file_get_html('http://licitacoes.ssp.df.gov.br./index.php/licitacoes/cat_view/1-licitacoes/4-concorrencia');
 	    
 	    foreach ($html->find('div.dm_row') as $title) {
@@ -35,6 +29,84 @@ class WebScraperController extends Controller
 	    
         $domain = "http://licitacoes.ssp.df.gov.br.";
     	
-    	return view('crawler', compact('data', 'domain'));
-    }
+    	return view('sspdf', compact('data', 'domain'));
+    }//end sspdf
+
+    // Using Goutte and DomCrawler
+    public function sebrae()
+    {
+        $client = new Client();
+
+        //$cliente->request() returns DomCrawler object
+        $crawler = $client->request('GET', 'http://www.portal.scf.sebrae.com.br/licitante/frmPesquisarAvancadoLicitacao.aspx');
+
+        $origin = $crawler
+            ->filter('span.unidade')
+            ->each(function (Crawler $node, $i) {
+                return $node->text();
+            });
+
+        $title = $crawler
+            ->filter('#resultadoBusca h3')
+            ->each(function (Crawler $node, $i) {
+                return $node->text();
+            });
+
+        $values = $crawler
+            ->filter('#resultadoBusca p')
+            ->each(function (Crawler $node, $i) {
+                return $node->text();
+            });
+
+
+        /*
+        $array = str_split($values[0]);
+
+        $word = "";
+
+        $find = str_split("Data de Abertura : ");
+
+        for ($j = 0; $j < count($find); $j++) {
+            for ($i = 0; $i < count($array); $i++) {
+                if ($array[$i] == $find[$j]) {
+                    $word += $array[$i]."";
+                    echo $word;
+                    break;
+                }
+            } 
+        }
+        */
+
+
+        $domain = 'http://www.portal.scf.sebrae.com.br/licitante/';
+        $title_page = "Sebrae";
+
+        return view('sebrae', compact('origin', 'title', 'values', 'domain', 'title_page'));
+    }//end sebrae
+
+    //using Goutte and DomCrawler
+    public function cnpq()
+    {
+        $client = new Client();
+
+        $crawler = $client->request('GET', 'http://www.cnpq.br/web/guest/licitacoes');
+
+        $title = $crawler->filter('.licitacoes h4')->each(function(Crawler $node, $i) {
+            return $node->text();
+        });
+
+        $object = $crawler->filter('.cont_licitacoes p')->each(function(Crawler $node, $i) {
+            return str_replace("Objeto:", "", $node->text());
+        });
+
+        $starting_date = $crawler->filter('.data_licitacao span')->each(function(Crawler $node, $i) {
+            return $node->text();
+        });
+
+        $link = $crawler->filter('.outro-doc a')->extract(array('href'));
+
+        $domain = 'http://www.cnpq.br';
+
+        return view('cnpq', compact('title', 'object', 'starting_date', 'link', 'domain'));
+    }//end cnpq
 }
